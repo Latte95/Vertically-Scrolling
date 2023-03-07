@@ -11,7 +11,9 @@ public class Player : MonoBehaviour
   private GameObject collidingObject;
   #endregion
 
-  public float speed;
+  // 플레이어 속도
+  private float speed = 1.3f;
+  // 플레이어가 벽에 닿았는지 판단하는 bool값
   public bool isTouchTop;
   public bool isTouchBottom;
   public bool isTouchLeft;
@@ -28,6 +30,7 @@ public class Player : MonoBehaviour
 
   private void Update()
   {
+    // 벽에 닿아있을 경우 움직이지 않도록 함. 충돌만 이용하면 캐릭터가 진동하는 현상 발생.
     float h = Input.GetAxisRaw("Horizontal");
     if ((isTouchRight && h == 1) || (isTouchLeft && h == -1))
       h = 0;
@@ -35,16 +38,17 @@ public class Player : MonoBehaviour
     if ((isTouchTop && v == 1) || (isTouchBottom && v == -1))
       v = 0;
 
+    // 플레이어 이동
     Vector3 curPos = myTransform.position;    // 플레이어 현재 위치
     Vector3 nextPos = speed * deltaTime * new Vector3(h, v, 0); // 이동해야 될 위치
-
     myTransform.position = curPos + nextPos;
-
+    // 이동 애니메이션
     if (h != anim.GetInteger("InputH"))
       anim.SetInteger("InputH", (int)h);
   }
 
-  private void OnTriggerEnter2D(Collider2D collision)
+  // 플레이어가 벽에 닿았는지 판단
+  private void OnTriggerStay2D(Collider2D collision)
   {
     collidingObject = collision.gameObject;
     if (collidingObject.tag == "Border")
@@ -66,9 +70,11 @@ public class Player : MonoBehaviour
       }
     }
   }
-
+  
+  // 플레이어가 벽에서 나왔는지 판단
   private void OnTriggerExit2D(Collider2D collision)
   {
+    collidingObject = collision.gameObject;
     if (collidingObject.tag == "Border")
     {
       switch (collidingObject.name)
