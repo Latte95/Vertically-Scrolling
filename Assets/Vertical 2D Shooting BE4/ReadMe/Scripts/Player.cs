@@ -6,6 +6,9 @@ public class Player : MonoBehaviour
 {
   #region 캐싱
   private Animator anim;
+  private float deltaTime;
+  private Transform myTransform;
+  private GameObject collidingObject;
   #endregion
 
   public float speed;
@@ -18,6 +21,8 @@ public class Player : MonoBehaviour
   {
     #region 캐싱
     anim = GetComponent<Animator>();
+    deltaTime = Time.deltaTime;
+    myTransform = transform;
     #endregion
   }
 
@@ -30,21 +35,21 @@ public class Player : MonoBehaviour
     if ((isTouchTop && v == 1) || (isTouchBottom && v == -1))
       v = 0;
 
-    Vector3 curPos = transform.position;    // 플레이어 현재 위치
-    Vector3 nextPos = new Vector3(h, v, 0) * speed * Time.deltaTime; // 이동해야 될 위치
+    Vector3 curPos = myTransform.position;    // 플레이어 현재 위치
+    Vector3 nextPos = speed * deltaTime * new Vector3(h, v, 0); // 이동해야 될 위치
 
-    transform.position = curPos + nextPos;
+    myTransform.position = curPos + nextPos;
 
-    if (Input.GetButtonDown("Horizontal") ||
-        Input.GetButtonUp("Horizontal"))
+    if (h != anim.GetInteger("InputH"))
       anim.SetInteger("InputH", (int)h);
   }
 
   private void OnTriggerEnter2D(Collider2D collision)
   {
-    if (collision.gameObject.tag == "Border")
+    collidingObject = collision.gameObject;
+    if (collidingObject.tag == "Border")
     {
-      switch (collision.gameObject.name)
+      switch (collidingObject.name)
       {
         case "Top":
           isTouchTop = true;
@@ -64,9 +69,9 @@ public class Player : MonoBehaviour
 
   private void OnTriggerExit2D(Collider2D collision)
   {
-    if (collision.gameObject.tag == "Border")
+    if (collidingObject.tag == "Border")
     {
-      switch (collision.gameObject.name)
+      switch (collidingObject.name)
       {
         case "Top":
           isTouchTop = false;
