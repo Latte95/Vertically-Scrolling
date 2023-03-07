@@ -11,8 +11,16 @@ public class Player : MonoBehaviour
   private GameObject collidingObject;
   #endregion
 
+  #region 테두리
+  private const float top = 5.2f - 1.0f;
+  private const float bottom = -5.2f + 1.0f;
+  private float left = -2.78f + 1.0f;
+  private float right = 2.78f - 1.0f;
+  #endregion
+
   // 플레이어 속도
-  private float speed = 1.3f;
+  [SerializeField]
+  private float speed = 0.02f;
   // 플레이어가 벽에 닿았는지 판단하는 bool값
   public bool isTouchTop;
   public bool isTouchBottom;
@@ -30,7 +38,7 @@ public class Player : MonoBehaviour
 
   private void Update()
   {
-    // 벽에 닿아있을 경우 움직이지 않도록 함. 충돌만 이용하면 캐릭터가 진동하는 현상 발생.
+    // 벽에 닿아있을 경우 움직이지 않도록 함. RigidBody를 이용하면 캐릭터가 진동하는 현상 발생.
     float h = Input.GetAxisRaw("Horizontal");
     if ((isTouchRight && h == 1) || (isTouchLeft && h == -1))
       h = 0;
@@ -39,59 +47,14 @@ public class Player : MonoBehaviour
       v = 0;
 
     // 플레이어 이동
-    Vector3 curPos = myTransform.position;    // 플레이어 현재 위치
-    Vector3 nextPos = speed * deltaTime * new Vector3(h, v, 0); // 이동해야 될 위치
-    myTransform.position = curPos + nextPos;
+    Vector3 curPos = myTransform.position;  // 플레이어 현재 위치
+    Vector3 targetPos = curPos + speed * new Vector3(h, v, 0);  // 이동해야 될 위치
+    // 플레이어 위치 업데이트
+    myTransform.position = new Vector3(
+      Mathf.Clamp(targetPos.x, left, right), Mathf.Clamp(targetPos.y, bottom, top), 0f);
     // 이동 애니메이션
+    // h값이 바뀌었을 때만 InputH값을 변경
     if (h != anim.GetInteger("InputH"))
       anim.SetInteger("InputH", (int)h);
-  }
-
-  // 플레이어가 벽에 닿았는지 판단
-  private void OnTriggerStay2D(Collider2D collision)
-  {
-    collidingObject = collision.gameObject;
-    if (collidingObject.tag == "Border")
-    {
-      switch (collidingObject.name)
-      {
-        case "Top":
-          isTouchTop = true;
-          break;
-        case "Bottom":
-          isTouchBottom = true;
-          break;
-        case "Left":
-          isTouchLeft = true;
-          break;
-        case "Right":
-          isTouchRight = true;
-          break;
-      }
-    }
-  }
-  
-  // 플레이어가 벽에서 나왔는지 판단
-  private void OnTriggerExit2D(Collider2D collision)
-  {
-    collidingObject = collision.gameObject;
-    if (collidingObject.tag == "Border")
-    {
-      switch (collidingObject.name)
-      {
-        case "Top":
-          isTouchTop = false;
-          break;
-        case "Bottom":
-          isTouchBottom = false;
-          break;
-        case "Left":
-          isTouchLeft = false;
-          break;
-        case "Right":
-          isTouchRight = false;
-          break;
-      }
-    }
   }
 }
