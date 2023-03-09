@@ -17,15 +17,20 @@ public class Player : MonoBehaviour
   private const float rightBorder = 2.78f - 1.0f;
   #endregion
 
+  // 태그  
+  private const string tagEnemy = "Enemy";
+  private const string tagEnemyBullet = "Enemy Bullet";
+
   // 플레이어
   [SerializeField]
   private float playerSpeed = 0.04f;
   [SerializeField]
   private int playerPower;
+  public GameManager gameManager;
 
   #region 총알
   public GameObject pBullet1;
-  public GameObject pBullet2;
+  public GameObject pBullet2;  
 
   private float bulletSpeed = 10;
   public float shotSpeedDelay;  // 플레이어 공격 속도
@@ -87,8 +92,8 @@ public class Player : MonoBehaviour
     switch (playerPower)
     {
       case 1:
-        GameObject bullet = Instantiate(pBullet1, myTransform.position, myTransform.rotation);
-        Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+        GameObject bullet1 = Instantiate(pBullet1, myTransform.position, myTransform.rotation);
+        Rigidbody2D rigid = bullet1.GetComponent<Rigidbody2D>();
         rigid.AddForce(bulletSpeed * Vector2.up, ForceMode2D.Impulse);
         break;
       case 2:
@@ -119,4 +124,13 @@ public class Player : MonoBehaviour
   {
     curShotDelay += deltaTime;
   }
+
+private void OnTriggerExit2D(Collider2D collision) 
+{
+  if(collision.gameObject.tag == tagEnemy ||collision.gameObject.tag == tagEnemyBullet) 
+  {
+    gameManager.RespawnPlayer();
+    gameObject.SetActive(false);    
+  } 
+}
 }

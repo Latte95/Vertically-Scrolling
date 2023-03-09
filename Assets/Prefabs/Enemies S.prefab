@@ -136,8 +136,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f625fe929e1f8e94784d341038f7ef9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   speed: 1.5
   health: 1
   sprites:
   - {fileID: -1305402664, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
   - {fileID: -1319934964, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
+  enemyName: S
+  eBullet1: {fileID: 5542833384707634180, guid: df2942a8bb6932a4cbc9be1acb7b2b0f, type: 3}
+  eBullet2: {fileID: 5542833384707634180, guid: 79b9708ce6fad2e4faa164d968b0e523, type: 3}
+  shotSpeedDelay: 2
+  curShotDelay: 0
