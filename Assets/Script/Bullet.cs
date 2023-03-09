@@ -4,17 +4,14 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-  private GameObject mGameObj;
-  private const string bulletBord = "Border Bullet";
-
-  private void Awake()
-  {
-    mGameObj = gameObject;
-  }
+  public const string bulletBordTag = "Border Bullet";
+  public const string playerBulletTag = "Player Bullet";
+  public int dmg;
   
   private void OnTriggerEnter2D(Collider2D collision)
   {
-    if (collision.gameObject.tag == bulletBord)
+    // 총알이 맵을 벗어나면 소멸
+    if (collision.gameObject.tag == bulletBordTag)
       Destroy(gameObject);
   }
 }
