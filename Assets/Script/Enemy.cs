@@ -40,13 +40,15 @@ public class Enemy : MonoBehaviour
 
   private void OnTriggerEnter2D(Collider2D collision)
   {
+    // 맵을 넘어간 경우
     if (collision.gameObject.tag == Bullet.bulletBordTag)
       Destroy(gameObject);
+    // 플레이어 공격에 피격 된 경우
     else if (collision.gameObject.tag == Bullet.playerBulletTag)
     {
       Bullet bullet = collision.gameObject.GetComponent<Bullet>();
       OnHit(bullet.dmg);
-
+      // 총알 소멸
       Destroy(collision.gameObject);
     }
   }
